@@ -115,7 +115,7 @@ Make sure you have the following installed:
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/cyber-fraud-detection.git
+git clone https://github.com/ashwinsiby029/cyber-fraud-detection.git
 ```
 
 Navigate into the project:
