@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield — Fraud Detection</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --primary: #00e5a0;
+            --bg-dark: #0b0e14;
+            --card-bg: rgba(22, 27, 40, 0.7);
+            --text-main: #e8eaf0;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth; 
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #161b28, #0b0e14);
+            color: var(--text-main);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        nav {
+            padding: 20px 5%;
+            background: rgba(11, 14, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav h2 {
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 2px;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px 100px; 
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 229, 160, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        #analysis-result {
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .risk-value {
+            font-size: 4rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            display: block;
+            margin: 10px 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 600px) {
+            .glass-card { padding: 20px; }
+            h1 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2 class="animate__animated animate__fadeInLeft">CYBERSHIELD</h2>
+</nav>
+
+<div class="container animate__animated animate__fadeIn">
+    <div class="glass-card">
+        <h1>Report a Cyber Fraud</h1>
+
+        <form id="fraudForm" method="POST">
+            {% csrf_token %}
+            
+            <label>Incident Title</label>
+            <input type="text" name="title" placeholder="e.g., Unrecognized Bank Message" required>
+
+            <label>Fraud Category</label>
+            <select name="category">
+                <option value="UPI">UPI Fraud</option>
+                <option value="Phishing">Phishing</option>
+                <option value="Vishing">Vishing</option>
+            </select>
+
+            <label>Details</label>
+            <textarea name="description" rows="5" placeholder="Provide as much detail as possible..." required></textarea>
+
+            <button type="submit">Analyze Incident</button>
+        </form>
+
+        {% if score != None %}
+            <div id="analysis-result" class="animate__animated animate__jackInTheBox">
+                <p style="color: #94a3b8;">Threat Analysis Complete</p>
+                <span class="risk-value">{{ score }}%</span>
+
+                {% if score > 70 %}
+                    <div class="status-badge" style="background: #ff3b30; color: #fff;">HIGH RISK ⚠️</div>
+                {% elif score > 40 %}
+                    <div class="status-badge" style="background: #ff9f0a; color: #000;">MEDIUM RISK ⚠️</div>
+                {% else %}
+                    <div class="status-badge" style="background: #30d158; color: #000;">LOW RISK ✅</div>
+                {% endif %}
+            </div>
+
+            <script>
+                window.onload = function() {
+                    const element = document.getElementById("analysis-result");
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                };
+            </script>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>

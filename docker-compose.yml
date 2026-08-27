@@ -1,0 +1,19 @@
+
+services:
+  backend:
+    build: ./Backend
+    container_name: fraud-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+  frontend:
+    build: ./Frontend
+    container_name: fraud-frontend
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./Frontend:/app
+    command: python manage.py runserver 0.0.0.0:8001
